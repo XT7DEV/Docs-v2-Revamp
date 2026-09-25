@@ -141,6 +141,29 @@ for (const yamlFile of yamlFiles) {
         appendLine("")
     }
 
+    const constructors = c.Constructors ? (Array.isArray(c.Constructors) ? c.Constructors : [c.Constructors]) : [];
+
+    if (constructors.length > 0) {
+        appendLine("")
+        appendLine("## Constructors")
+        appendLine("")
+    }
+    for (const con of constructors) {
+        if (con.IsObsolete) continue
+        let params = []
+
+        const parameters = con.Parameters ? (Array.isArray(con.Parameters) ? con.Parameters : [con.Parameters]) : [];
+        for (const p of parameters) {
+            params.push(`${p.Name};${p.Type}${p.IsOptional ? "?" : ""}`)
+        }
+
+        appendLine(`### ${con.Name}(${params.join(",")}) { construct }`)
+        appendLine(``)
+        appendLine(con.Description || "Missing documentation!")
+        appendLine(``)
+    }
+    
+
     const properties = c.Properties ? (Array.isArray(c.Properties) ? c.Properties : [c.Properties]) : [];
 
     if (properties.length > 0) {

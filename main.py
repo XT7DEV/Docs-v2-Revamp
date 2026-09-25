@@ -344,12 +344,81 @@ def method(name):
 
     return "### :polytoria-Method: %s %s { #%s data-toc-label=\"%s\" }%s" % (name, property_type, name, name, parametersList)
 
+def constructor(name):
+    value = name[3:] # in form "name:type"
+    name = value.split(":")[0].strip().split("(")[0].strip()
+
+    property_type = ""
+    has_link = False
+    if 1 < len(value.split(":")):
+        property_type = value.split(":")[1].strip()
+        if property_type in type_friendlyname_table:
+            property_type = type_friendlyname_table[property_type]
+        if getClassLink(property_type) != "?":
+            property_type = getClassLink(property_type)
+            has_link = True
+
+    if property_type != "":
+        if has_link == False:
+            property_type = "`" + property_type + "`"
+        property_type = "→ " + property_type
+
+    parametersList = ""
+
+    parameters = ''.join(value.split("("))
+    parameters = parameters.split(")")[0].replace(name, '').split(',')
+    if "(" in value:
+        for i in range(len(parameters)):
+            v = parameters[i].replace(':', '').strip()
+
+            sections = v.split(';')
+            if len(sections) == 1:
+                sections.insert(0, "")
+            param_name = sections[0].strip()
+            param_type = sections[1].strip()
+
+            parts = param_type.split('=')
+            if len(parts) > 0:
+                for part in range(len(parts)):
+                    if parts[part] in parametertype_friendlyname_table:
+                        parts[part] = parametertype_friendlyname_table[parts[part]]
+
+                    if getClassLink(parts[part]) != "?":
+                        parts[part] = getClassLink(parts[part])
+                    else:
+                        parts[part] = "`" + parts[part] + "`"
+            param_type = ' = '.join(parts)
+
+            optional_msg = ""
+            if "?" in param_name:
+                optional_msg = " - this parameter is optional"
+                param_name = param_name.replace('?','')
+
+            if param_name != "":
+                v = "%s [ %s ]%s" % (param_name, param_type, optional_msg)
+            else:
+                v = param_type
+
+            parameters[i] = v
+
+        if len(parameters) > 1:
+            parametersList = "\n??? quote \"Parameters\"\n" + "\n\n".join(['    ' + item for item in parameters])
+        elif len(parameters) == 1:
+            parametersList = f"\n!!! quote \"**Parameters:** <span style=\"font-weight: normal;\">" + parameters[0] + "</span>\""
+        
+        if (parametersList.find("``") != -1):
+            parametersList = f"\n!!! quote \"**Parameters:** <span style=\"font-weight: normal;\">" + "None" + "</span>\""
+
+    return "### :material-new-box: %s %s { #%s data-toc-label=\"%s\" }%s" % (name, property_type, name, name, parametersList)
+
 def on_pre_page_macros(env):
     #find headers with { macroName } at the end and replace with the associated macro
     markdown_text = env.markdown
     lines = markdown_text.split("\n")
     for i in range(len(lines)):
-        if lines[i].endswith("{ property }"):
+        if lines[i].endswith("{ construct }"):
+            lines[i] = constructor(lines[i][:-len("{ construct }")])
+        elif lines[i].endswith("{ property }"):
             lines[i] = property(lines[i][:-len("{ property }")])
         elif lines[i].endswith("{ event }"):
             lines[i] = event(lines[i][:-len("{ event }")])
