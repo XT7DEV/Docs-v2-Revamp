@@ -272,6 +272,9 @@ def event(name):
         elif len(parameters) == 1:
             parametersList = f"\n!!! quote \"**Parameters:** <span style=\"font-weight: normal;\">" + parameters[0] + "</span>\""
 
+        if (parametersList.find("``") != -1):
+            parametersList = f"\n!!! quote \"**Parameters:** <span style=\"font-weight: normal;\">" + "None" + "</span>\""
+            
     return "### <a href=\"../../scripting/PTSignal\">:polytoria-Event:</a> %s { #%s data-toc-label=\"%s\" }%s" % (name, name, name, parametersList)
 
 def method(name):
@@ -335,6 +338,9 @@ def method(name):
             parametersList = "\n??? quote \"Parameters\"\n" + "\n\n".join(['    ' + item for item in parameters])
         elif len(parameters) == 1:
             parametersList = f"\n!!! quote \"**Parameters:** <span style=\"font-weight: normal;\">" + parameters[0] + "</span>\""
+        
+        if (parametersList.find("``") != -1):
+            parametersList = f"\n!!! quote \"**Parameters:** <span style=\"font-weight: normal;\">" + "None" + "</span>\""
 
     return "### :polytoria-Method: %s %s { #%s data-toc-label=\"%s\" }%s" % (name, property_type, name, name, parametersList)
 

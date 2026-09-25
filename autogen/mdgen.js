@@ -2,6 +2,7 @@ const fs = require("fs")
 const path = require("path")
 const yaml = require("yaml")
 
+const codeExamplesPath = path.join(__dirname, "../", "code-examples")
 const yamlAPIPath = path.join(__dirname, "../", "yaml", "types")
 const mdAPIPath = path.join(__dirname, "../", "docs/api", "types")
 const iconDataPath = path.join(__dirname, "../", "docs/theme/.icons", "polytoria")
@@ -175,6 +176,13 @@ for (const yamlFile of yamlFiles) {
         appendLine(``)
         appendLine(m.Description || "Missing documentation!")
         appendLine(``)
+
+        if (m.Example){
+            const examplecode = fs.readFileSync(path.join(codeExamplesPath, m.Example + ".lua"))
+            appendLine("``` lua")
+            appendLine(examplecode.toString())
+            appendLine("```")
+        }
     }
 
     const events = c.Events ? (Array.isArray(c.Events) ? c.Events : [c.Events]) : [];
