@@ -11,6 +11,7 @@ Constructors:
     IsStatic: true
     IsSemiStatic: false
     Description: Returns a new Vector3.
+    Example: vector3/New-Empty
   - Name: New
     ReturnType: Vector3
     Parameters:
