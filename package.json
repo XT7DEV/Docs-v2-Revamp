@@ -1,23 +1,19 @@
 {
-  "name": "polytoria-docs-2",
-  "version": "1.0.0",
-  "description": "Polytoria 2.0 Documentation",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "name": "Polytoria-2.0-Documentation",
+  "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "dev": "node autogen/mdgen.js && mkdocs serve",
-    "build": "npm run gen && mkdocs build",
-    "build-ci": "npm i && node autogen/mdgen.js && mkdocs build",
-    "gen": "node autogen/yamlgen.js && node autogen/mdgen.js"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
-  "keywords": [],
-  "author": "Polytoria Contributors",
-  "license": "MIT",
-  "type": "commonjs",
   "dependencies": {
-    "fast-xml-parser": "^5.3.3",
-    "yaml": "^2.8.2"
+    "@astrojs/starlight": "^0.42.6",
+    "astro": "^7.2.10",
+    "astro-icon": "^1.2.0",
+    "sharp": "^0.35.3",
+    "starlight-heading-badges": "^0.8.0"
   }
 }

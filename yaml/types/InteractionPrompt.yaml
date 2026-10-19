@@ -1,6 +1,6 @@
 Name: InteractionPrompt
 Description: InteractionPrompt is a object that allows players to interact with objects.
-Category: misc
+Category: ui
 BaseType: Physical
 Properties:
   - Name: UIMode
@@ -9,7 +9,7 @@ Properties:
     IsReadOnly: false
     IsObsolete: false
     IsStatic: false
-    Description: Missing Documentation
+    Description: Determines whether the prompt is a GUI3D
   - Name: Enabled
     Type: boolean
     IsAccessibleByScripts: true
@@ -23,7 +23,7 @@ Properties:
     IsReadOnly: false
     IsObsolete: false
     IsStatic: false
-    Description: Missing Documentation
+    Description: Hides the prompt by default
   - Name: Title
     Type: string
     IsAccessibleByScripts: true
@@ -101,7 +101,7 @@ Methods:
   - Name: HideFor
     ReturnType: nil
     Parameters:
-      - Name: plr
+      - Name: player
         Type: Player
         IsOptional: false
         DefaultValue: ""
@@ -113,7 +113,7 @@ Methods:
   - Name: ShowFor
     ReturnType: nil
     Parameters:
-      - Name: plr
+      - Name: player
         Type: Player
         IsOptional: false
         DefaultValue: ""
@@ -130,7 +130,9 @@ Events:
         IsOptional: false
         DefaultValue: null
     Description: Fires when prompt is interacted with
-    Arguments: ""
+    Arguments: 
+      Name: player
+      Type: Player
 IsStatic: false
 IsAbstract: false
 IsInstantiable: true

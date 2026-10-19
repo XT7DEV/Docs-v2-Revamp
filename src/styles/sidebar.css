@@ -1,0 +1,17 @@
+.sidebar-pane a[data-icon] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar-pane a[data-icon]::before {
+    content: "";
+    display: inline-block;
+    width: 1.1em;
+    height: 1.1em;
+    background-color: currentColor;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+    mask-image: var(--icon-url);
+}
