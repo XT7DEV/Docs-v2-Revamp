@@ -52,6 +52,10 @@ const yamlFiles = fs.readdirSync(yamlAPIPath).filter(file => file.endsWith('.yam
 
 const inheritedBy = {}
 const classDataMap = {}
+const linkTable = {
+    api: {},
+    enums: {}
+}
 
 // First pass, check for inherited by
 for (const yamlFile of yamlFiles) {
@@ -67,6 +71,8 @@ for (const yamlFile of yamlFiles) {
         }
         inheritedBy[c.BaseType].push(c.Name || className)
     }
+
+    linkTable.api[className] = `../../${c.Category}/${className.toLowerCase()}/`
 }
 
 // Second pass, generate md files
@@ -102,18 +108,43 @@ for (const yamlFile of yamlFiles) {
     function appendPropExplainer(apiClass, propTitle, propType) {
         //mk += "{{ propExplainer(\"" + apiClass + "\",\"" + propTitle + "\",\"" + propType + "\") }}"
     }
+    function appendInherits(apiClass) {
+        let str = `**Inherits:** [${apiClass.Name}](${linkTable.api[apiClass.Name]})`
+        let currentClass = apiClass
+        while (currentClass.BaseType != null){
+            str += ` < [${currentClass.BaseType}](${linkTable.api[currentClass.BaseType]})`
+            newclass = classDataMap[currentClass.BaseType]
+            if (newclass == null){
+                break
+            } else {
+                currentClass = newclass
+            }
+        }
+        mk += `${str}\n`
+    }
+    function appendInheritedBy() {
+        let str = "**Inherited By:** "
+        for (const name of inheritedBy[className]){
+            if (str == "**Inherited By:** "){
+                str += `[${name}](${linkTable.api[name]})`
+            } else {
+                str += `, [${name}](${linkTable.api[name]})`
+            }
+        }
+        mk += `${str}\n`
+    }
 
     appendLine("---")
     appendLine("title: " + c.Name)
     if (emojiExists & !c.Icon) {
         appendLine("sidebar:")
-        appendLine(" label: \"[" + c.Name + "] " + c.Name + "\"")
+        appendLine(` label: \"[${c.Name}] ${c.Name}\"`)
     } else if (c.Icon) {
         appendLine("sidebar:")
-        appendLine(" label: \"[" + c.Icon + "] " + c.Name + "\"")
+        appendLine(` label: \"[${c.Icon}] ${c.Name}\"`)
     } else {
         appendLine("sidebar:")
-        appendLine(" label: \"[Unknown] " + c.Name + "\"")
+        appendLine(` label: \"[Unknown] ${c.Name}\"`)
     }
     appendLine("---")
     appendLine("")
@@ -121,23 +152,23 @@ for (const yamlFile of yamlFiles) {
     appendLine('import { Badge, Aside } from "@astrojs/starlight/components";')
     appendLine("")
     if (emojiExists & !c.Icon) {
-        appendLine("# " + c.Name + ` <Icon width="64px" height="64px" name="${c.Name}"/>`)
+        appendLine(`# ${c.Name} <Icon width="64px" height="64px" name="${c.Name}"/>`)
     } else if (c.Icon) {
-        appendLine("# " + c.Name + ` <Icon width="64px" height="64px" name="${c.Icon}"/>`)
+        appendLine(`# ${c.Name} <Icon width="64px" height="64px" name="${c.Icon}"/>`)
     } else {
-        appendLine("# " + c.Name)
+        appendLine(`# ${c.Name}`)
     }
 
     if (c.BaseType) {
         appendLine("")
-        //appendLine(`{{ inherits("${c.BaseType}") }}`)
+        appendInherits(c)
     }
 
     // Inherited by
     const children = inheritedBy[c.Name || className]
     if (children && children.length > 0) {
         appendLine("")
-        //appendLine(`{{ inherited_by([${children.map(n => `"${n}"`).join(", ")}]) }}`)
+        appendInheritedBy()
     }
 
     appendLine("")
@@ -146,7 +177,7 @@ for (const yamlFile of yamlFiles) {
 
     if (c.IsStatic) {
         if (c.StaticAlias){
-            appendLine('<Aside type="caution" title="Static">This class is static and can be accessed by `' + c.StaticAlias + '`. Additionally it cannot be created by `Instance.New()` or the insert menu.</Aside>')
+            appendLine(`<Aside type="caution" title="Static">This class is static and can be accessed by \`${c.StaticAlias}\`. Additionally it cannot be created by \`Instance.New()\` or the insert menu.</Aside>`)
         } else {
             appendLine('<Aside type="caution" title="Static">This class is static and cannot be created by `Instance.New()` or the insert menu.</Aside>')
         }

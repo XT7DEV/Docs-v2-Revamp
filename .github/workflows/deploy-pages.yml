@@ -2,7 +2,7 @@ name: Deploy Documentation
 
 on:
   push:
-    branches: ["main"]
+    branches: ["starlight"]
 
   workflow_dispatch:
 
@@ -16,25 +16,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v7
+      - name: Install Dependancies
+        run: npm install
+      - name: Generate Docs From YAML
+        run: node autogen/mdgen.cjs
+      - name: Install, build, and upload your site
+        uses: withastro/action@v6
+        with:
+          path: . # The root location of your Astro project inside the repository. (optional)
+          node-version: 24 # The specific version of Node that should be used to build your site. Defaults to 24. (optional)
+          package-manager: npm@latest # The Node package manager that should be used to install dependencies and build your site. Automatically detected based on your lockfile. (optional)
+          # build-cmd: pnpm run build # The command to run to build your site. Runs the package build script/task by default. (optional)
+        # env:
+          # PUBLIC_POKEAPI: 'https://pokeapi.co/api/v2' # Use single quotation marks for the variable value. (optional)
+
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: pip install
-        run: pip install -r requirements.txt
-      - name: Build Documentation
-        run: npm run build-ci
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: './site'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

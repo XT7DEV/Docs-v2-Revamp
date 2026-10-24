@@ -2,15 +2,16 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import icon from 'astro-icon';
-import starlightHeadingBadges from 'starlight-heading-badges'
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://xt7dev.github.io',
+	base: '/Docs-v2-Revamp',
 	integrations: [starlight({
 		title: 'Polytoria 2.0 Documentation',
 		pagination: false,
 		lastUpdated: true,
-		social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+		social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/polytoria/Docs-v2' }],
 		customCss: [
 			'./src/styles/main.css',
 		],
@@ -64,10 +65,7 @@ export default defineConfig({
 			},
 		],
 		components: {
-			Sidebar: './src/components/Sidebar.astro'
+			Sidebar: './src/components/Sidebar.astro',
 		},
-		plugins: [
-			starlightHeadingBadges(),
-		],
 	}), icon()],
 });
