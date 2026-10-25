@@ -1,0 +1,18 @@
+---
+const { head } = Astro.locals.starlightRoute;
+---
+
+{
+    head.map(({ tag: Tag, attrs, content }) => (
+        <Tag {...attrs} set:html={content} />
+    ))
+}
+
+<meta property="og:site_name" content="Polytoria 2.0 Documentation" />
+<meta property="og:title" content="2.0 Docs" />
+<meta
+    property="og:description"
+    content="Built with Starlight and Astro."
+/>
+<meta name="theme-color" content="#5865F2" />
+<meta name="twitter:card" content="summary_large_image" />
